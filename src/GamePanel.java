@@ -6,29 +6,27 @@ import java.awt.event.*;
 import java.util.Random;
 import java.util.logging.Handler;
 /*
-git init
-git remote add origin [master or main]
-git add .
-git commit -m "Snake is born"
-git push origin [master or main]
-comment
+stuff i still needa do
+make it so the snake cant go through itself
+add banner at the top where you can put things including new gamemodes and ability to change colora
+fix glitch of eating banana = death
+
  */
 
 public class GamePanel extends JPanel implements ActionListener {
     static final int m_screenX = 600;
     static final int m_screenY = 600;
-    static final int m_unitSize = 40;
+    static final int m_unitSize = 150;
     static final int m_gameUnits = (m_screenX * m_screenY) / m_unitSize;
     static final int totalSquares = (m_screenX / m_unitSize) * (m_screenY / m_unitSize);
-    static final int m_delay = 150;
+    static final int m_delay = 250;
     final int[] x = new int[m_gameUnits];
     final int[] y = new int[m_gameUnits];
     Color[] rainbow = {Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.magenta};
-    int j = 0;
     int bodyParts = 3;
     int bananasEaten;
-    int bananasX;
-    int bananasY;
+    int bananaX;
+    int bananaY;
     char direction = 'R';
     Timer timer;
     Random random;
@@ -72,12 +70,13 @@ public class GamePanel extends JPanel implements ActionListener {
                     g.drawLine(i * m_unitSize, 0, i * m_unitSize, m_screenY);
                     g.drawLine(0, i * m_unitSize, m_screenY, i * m_unitSize);
                 }
-                g.drawImage(bananaPic.getImage(), bananasX, bananasY, m_unitSize + 5, m_unitSize + 5, null);
+                g.drawImage(bananaPic.getImage(), bananaX, bananaY, m_unitSize + 5, m_unitSize + 5, null);
                 for (int i = 0; i < bodyParts; i++) {
                     g.setColor(rainbow[i % rainbow.length]);
                     g.fillRect(x[i], y[i], m_unitSize, m_unitSize);
                 }
                 break;
+
             case GAME_OVER:
                 gameOver(g);
                 bodyParts = 3;
@@ -86,6 +85,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 break;
             case WAITING:
                 break;
+
         }
         g.setColor(Color.red);
         g.setFont(new Font("Arial", Font.BOLD, 60));
@@ -95,8 +95,19 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void newBanana() {
-        bananasX = random.nextInt((int) m_screenX / m_unitSize) * m_unitSize;
-        bananasY = random.nextInt((int) m_screenY / m_unitSize) * m_unitSize;
+        bananaX = random.nextInt((int) m_screenX / m_unitSize) * m_unitSize;
+        bananaY = random.nextInt((int) m_screenY / m_unitSize) * m_unitSize;
+        for (int i = 0; i < bodyParts; i++) {
+            if ((bananaX == x[i]) && bananaY == y[i]) {
+                //System.out.println("bad banana");
+                if (bodyParts >= totalSquares) {
+                    currentState = State.GAME_OVER;
+                } else {
+                    newBanana();
+                }
+            }
+        }
+
     }
 
     public void move() {
@@ -123,7 +134,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void checkBanana() {
-        if ((x[0] == bananasX) && y[0] == bananasY) {
+        if ((x[0] == bananaX) && y[0] == bananaY) {
             bodyParts++;
             bananasEaten++;
             newBanana();
@@ -134,21 +145,27 @@ public class GamePanel extends JPanel implements ActionListener {
         for (int i = bodyParts; i > 0; i--) {
             if ((x[0] == x[i]) && y[0] == y[i]) {
                 currentState = State.GAME_OVER;
-                break;
+                System.out.println("hit snake");
+                //break;
             }
         }
 
         // Mexico check
         if (x[0] < 0) {
             currentState = State.GAME_OVER;
+            System.out.println("hit border");
         } else if (y[0] < 0) {
             currentState = State.GAME_OVER;
+            System.out.println("hit border");
         } else if (x[0] >= m_screenX) {
             currentState = State.GAME_OVER;
+            System.out.println("hit border");
         } else if (y[0] >= m_screenY) {
             currentState = State.GAME_OVER;
+            System.out.println("hit border");
         } else if (currentState == State.GAME_OVER) {
             timer.stop();
+
         }
     }
 
@@ -160,7 +177,6 @@ public class GamePanel extends JPanel implements ActionListener {
         label.setVisible(true);
         add(label);
         restartButton(g);
-
         if (bodyParts >= totalSquares) {
             remove(label);
             label2.setForeground(Color.red);
@@ -171,7 +187,6 @@ public class GamePanel extends JPanel implements ActionListener {
             System.out.println("You Win");
         }
     }
-
 
     // make the button APPEAR when gameOver
     public void restartButton(Graphics g) {
@@ -215,10 +230,9 @@ public class GamePanel extends JPanel implements ActionListener {
             move();
             checkBanana();
             checkCollision();
-        } else {
-            // what do you do when the button is pressed?
-//            button.setEnabled(true);
-        }
+        }  // what do you do when the button is pressed?
+
+
         repaint();
     }
 
