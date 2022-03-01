@@ -1,25 +1,23 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.LinkedList;
 import java.util.Random;
-import java.util.logging.Handler;
 /*
-stuff i still needa do
-make it so the snake cant go through itself
-add banner at the top where you can put things including new gamemodes and ability to change colora
+stuff i still needa do:
+not allow the snake to go back on itself
+add banner at the top where you can put things including new gamemodes and ability to change colors
 fix glitch of eating banana = death
-
+be able to pause
  */
 
 public class GamePanel extends JPanel implements ActionListener {
-    static final int m_screenX = 600;
-    static final int m_screenY = 600;
-    static final int m_unitSize = 150;
+    static final int m_screenX = 800;
+    static final int m_screenY = 800;
+    static final int m_unitSize = 100;
     static final int m_gameUnits = (m_screenX * m_screenY) / m_unitSize;
     static final int totalSquares = (m_screenX / m_unitSize) * (m_screenY / m_unitSize);
-    static final int m_delay = 250;
+    static final int m_delay = 150;
     final int[] x = new int[m_gameUnits];
     final int[] y = new int[m_gameUnits];
     Color[] rainbow = {Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.magenta};
@@ -27,8 +25,10 @@ public class GamePanel extends JPanel implements ActionListener {
     int bananasEaten;
     int bananaX;
     int bananaY;
-    char direction = 'R';
+    String currentDirection;
+    LinkedList<String> direction = new LinkedList<String>();
     Timer timer;
+    boolean isPaused = false;
     Random random;
     JButton button;
     JLabel label = new JLabel("Game Over");
@@ -52,6 +52,7 @@ public class GamePanel extends JPanel implements ActionListener {
         timer = new Timer(m_delay, this);
         timer.start();
         bananasEaten = 0;
+        direction.add("R");
     }
 
     public void paintComponent(Graphics g) {
@@ -115,18 +116,20 @@ public class GamePanel extends JPanel implements ActionListener {
             x[i] = x[i - 1];
             y[i] = y[i - 1];
         }
-
-        switch (direction) {
-            case 'U':
+        if (!direction.isEmpty()) {
+            currentDirection = direction.pop();
+        }
+        switch (currentDirection) {
+            case "U":
                 y[0] = y[0] - m_unitSize;
                 break;
-            case 'D':
+            case "D":
                 y[0] = y[0] + m_unitSize;
                 break;
-            case 'L':
+            case "L":
                 x[0] = x[0] - m_unitSize;
                 break;
-            case 'R':
+            case "R":
                 x[0] = x[0] + m_unitSize;
                 break;
         }
@@ -207,14 +210,13 @@ public class GamePanel extends JPanel implements ActionListener {
 
     // When restartButton is pressed start the game over again
     public void restartGame() {
-
-
 //        button.setEnabled(true);
         for (int i = bodyParts; i >= 0; i--) {
             x[i] = i;
             y[i] = 0;
         }
-        direction = 'R';
+        direction.clear();
+        direction.add("R");
         button.setVisible(false);
         move();
         currentState = State.RUNNING;
@@ -224,6 +226,14 @@ public class GamePanel extends JPanel implements ActionListener {
         startGame();
     }
 
+    public void pauseGame() {
+
+        if (isPaused) {
+            timer.stop();
+            currentState = State.WAITING;
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (currentState == State.RUNNING) {
@@ -231,8 +241,6 @@ public class GamePanel extends JPanel implements ActionListener {
             checkBanana();
             checkCollision();
         }  // what do you do when the button is pressed?
-
-
         repaint();
     }
 
@@ -240,26 +248,31 @@ public class GamePanel extends JPanel implements ActionListener {
         @Override
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
+
                 case KeyEvent.VK_A:
-                    if (direction != 'R') {
-                        direction = 'L';
-                    }
+                case KeyEvent.VK_LEFT:
+                    //if (!(direction.getLast().equals("R")))
+                        direction.add("L");
                     break;
                 case KeyEvent.VK_D:
-                    if (direction != 'L') {
-                        direction = 'R';
-                    }
+                case KeyEvent.VK_RIGHT:
+                    //if (!direction.equals("L"))
+                        direction.add("R");
+
                     break;
                 case KeyEvent.VK_W:
-                    if (direction != 'D') {
-                        direction = 'U';
-                    }
+                case KeyEvent.VK_UP:
+                    //if (!direction.equals("D"))
+                        direction.add("U");
+
                     break;
                 case KeyEvent.VK_S:
-                    if (direction != 'U') {
-                        direction = 'D';
-                    }
+                case KeyEvent.VK_DOWN:
+                    //if (direction "U")
+                        direction.add("D");
+
                     break;
+
             }
         }
     }
