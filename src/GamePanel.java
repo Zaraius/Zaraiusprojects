@@ -1,23 +1,25 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 import java.util.Random;
 /*
 stuff i still needa do:
-not allow the snake to go back on itself
-add banner at the top where you can put things including new gamemodes and ability to change colors
-fix glitch of eating banana = death
+add banner at the top where you can put things including new gamemodes and ability to change colors AND 2 player mode
+fix glitch of eating banana = death (i think its fixed)
 be able to pause
  */
 
 public class GamePanel extends JPanel implements ActionListener {
-    static final int m_screenX = 800;
-    static final int m_screenY = 800;
-    static final int m_unitSize = 100;
+    static final int m_screenX = 600;
+    static final int m_screenY = 600;
+    static final int m_unitSize = 60;
     static final int m_gameUnits = (m_screenX * m_screenY) / m_unitSize;
     static final int totalSquares = (m_screenX / m_unitSize) * (m_screenY / m_unitSize);
-    static final int m_delay = 150;
+    static final int m_delay = 100;
     final int[] x = new int[m_gameUnits];
     final int[] y = new int[m_gameUnits];
     Color[] rainbow = {Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.magenta};
@@ -33,8 +35,9 @@ public class GamePanel extends JPanel implements ActionListener {
     JButton button;
     JLabel label = new JLabel("Game Over");
     JLabel label2 = new JLabel("You Win");
+    JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
 
-    private ImageIcon bananaPic = new ImageIcon("please_work.png");
+    private final ImageIcon bananaPic = new ImageIcon("banana.png");
 
     GamePanel() {
         random = new Random();
@@ -65,11 +68,12 @@ public class GamePanel extends JPanel implements ActionListener {
     private State currentState = State.RUNNING;
 
     public void draw(Graphics g) {
+
         switch (currentState) {
             case RUNNING:
                 for (int i = 0; i < m_screenY / m_unitSize; i++) {
                     g.drawLine(i * m_unitSize, 0, i * m_unitSize, m_screenY);
-                    g.drawLine(0, i * m_unitSize, m_screenY, i * m_unitSize);
+                    g.drawLine(0, i * m_unitSize, m_screenX, i * m_unitSize);
                 }
                 g.drawImage(bananaPic.getImage(), bananaX, bananaY, m_unitSize + 5, m_unitSize + 5, null);
                 for (int i = 0; i < bodyParts; i++) {
@@ -95,12 +99,15 @@ public class GamePanel extends JPanel implements ActionListener {
 // def needa put stuff here
     }
 
+    // creates a new Banana when one is eaten
     public void newBanana() {
+        // creates random x and y positions for bananas
         bananaX = random.nextInt((int) m_screenX / m_unitSize) * m_unitSize;
         bananaY = random.nextInt((int) m_screenY / m_unitSize) * m_unitSize;
+        // if banana x and y position is the same as a current snake body part, new one is created
         for (int i = 0; i < bodyParts; i++) {
             if ((bananaX == x[i]) && bananaY == y[i]) {
-                //System.out.println("bad banana");
+                System.out.println("bad banana");
                 if (bodyParts >= totalSquares) {
                     currentState = State.GAME_OVER;
                 } else {
@@ -111,14 +118,20 @@ public class GamePanel extends JPanel implements ActionListener {
 
     }
 
+    //allows the snake to move up down left and right
     public void move() {
         for (int i = bodyParts; i > 0; i--) {
             x[i] = x[i - 1];
             y[i] = y[i - 1];
         }
-        if (!direction.isEmpty()) {
-            currentDirection = direction.pop();
+        // these are essential to ensure the linkedList for direction has the correct value and isn't empty
+        //if (!direction.isEmpty()) {
+        currentDirection = direction.pop();
+        //}
+        if (direction.isEmpty()) {
+            direction.add(currentDirection);
         }
+        // assigns each case x and y directions to move towards
         switch (currentDirection) {
             case "U":
                 y[0] = y[0] - m_unitSize;
@@ -136,6 +149,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
     }
 
+    // This count when the banana is eaten by the head of the snake
     public void checkBanana() {
         if ((x[0] == bananaX) && y[0] == bananaY) {
             bodyParts++;
@@ -145,6 +159,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void checkCollision() {
+        //checks if the snake hits itself
         for (int i = bodyParts; i > 0; i--) {
             if ((x[0] == x[i]) && y[0] == y[i]) {
                 currentState = State.GAME_OVER;
@@ -172,6 +187,7 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
+    // button setting when game is over
     public void gameOver(Graphics g) {
         label.setForeground(Color.red);
         label.setFont(new Font("Arial", Font.BOLD, 40));
@@ -180,6 +196,7 @@ public class GamePanel extends JPanel implements ActionListener {
         label.setVisible(true);
         add(label);
         restartButton(g);
+        // button setting if you win
         if (bodyParts >= totalSquares) {
             remove(label);
             label2.setForeground(Color.red);
@@ -191,6 +208,18 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
+    /*
+        public void topBannerSeparator(){
+            separator.setForeground(Color.BLUE);
+            separator.setBackground(Color.BLACK);
+            separator.setAlignmentX(300);
+            separator.setAlignmentY(200);
+            separator.setBounds(0, 0, m_screenX/3, m_screenY/3);
+            separator.setName("TOP BANNER");
+            separator.setVisible(true);
+        }
+
+     */
     // make the button APPEAR when gameOver
     public void restartButton(Graphics g) {
 //        g.setColor(Color.RED);
@@ -226,6 +255,7 @@ public class GamePanel extends JPanel implements ActionListener {
         startGame();
     }
 
+    // allows you to pause the game... still in development
     public void pauseGame() {
 
         if (isPaused) {
@@ -236,39 +266,41 @@ public class GamePanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        // allows everything to move when the game is running
         if (currentState == State.RUNNING) {
             move();
             checkBanana();
             checkCollision();
-        }  // what do you do when the button is pressed?
+        }
         repaint();
     }
 
     public class MyKeyAdapter extends KeyAdapter {
         @Override
+        // detects when a key is pressed
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
 
                 case KeyEvent.VK_A:
                 case KeyEvent.VK_LEFT:
-                    //if (!(direction.getLast().equals("R")))
+                    if (!(direction.getLast().equals("R")))
                         direction.add("L");
                     break;
                 case KeyEvent.VK_D:
                 case KeyEvent.VK_RIGHT:
-                    //if (!direction.equals("L"))
+                    if (!(direction.getLast().equals("L")))
                         direction.add("R");
 
                     break;
                 case KeyEvent.VK_W:
                 case KeyEvent.VK_UP:
-                    //if (!direction.equals("D"))
+                    if (!(direction.getLast().equals("D")))
                         direction.add("U");
 
                     break;
                 case KeyEvent.VK_S:
                 case KeyEvent.VK_DOWN:
-                    //if (direction "U")
+                    if (!(direction.getLast().equals("U")))
                         direction.add("D");
 
                     break;

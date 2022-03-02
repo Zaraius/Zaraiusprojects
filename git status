@@ -1,0 +1,122 @@
+warning: LF will be replaced by CRLF in .idea/workspace.xml.
+The file will have its original line endings in your working directory
+[1mdiff --git a/.idea/workspace.xml b/.idea/workspace.xml[m
+[1mindex c0b96e5..e421bcd 100644[m
+[1m--- a/.idea/workspace.xml[m
+[1m+++ b/.idea/workspace.xml[m
+[36m@@ -5,14 +5,7 @@[m
+   </component>[m
+   <component name="ChangeListManager">[m
+     <list default="true" id="d689ede6-c307-4f75-9189-36f3e01d7cdd" name="Default Changelist" comment="">[m
+[31m-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />[m
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />[m
+[31m-      <change beforePath="$PROJECT_DIR$/out/production/SnakeGame/GameFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SnakeGame/GameFrame.class" afterDir="false" />[m
+[31m-      <change beforePath="$PROJECT_DIR$/out/production/SnakeGame/GamePanel$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SnakeGame/GamePanel$1.class" afterDir="false" />[m
+[31m-      <change beforePath="$PROJECT_DIR$/out/production/SnakeGame/GamePanel$MyKeyAdapter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SnakeGame/GamePanel$MyKeyAdapter.class" afterDir="false" />[m
+[31m-      <change beforePath="$PROJECT_DIR$/out/production/SnakeGame/GamePanel$State.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SnakeGame/GamePanel$State.class" afterDir="false" />[m
+[31m-      <change beforePath="$PROJECT_DIR$/out/production/SnakeGame/GamePanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SnakeGame/GamePanel.class" afterDir="false" />[m
+[31m-      <change beforePath="$PROJECT_DIR$/out/production/SnakeGame/SnakeGame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SnakeGame/SnakeGame.class" afterDir="false" />[m
+       <change beforePath="$PROJECT_DIR$/src/GamePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GamePanel.java" afterDir="false" />[m
+     </list>[m
+     <option name="SHOW_DIALOG" value="false" />[m
+[36m@@ -48,6 +41,7 @@[m
+     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,[m
+     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,[m
+     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,[m
+[32m+[m[32m    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,[m
+     &quot;settings.editor.selected.configurable&quot;: &quot;AndroidSdkUpdater&quot;[m
+   }[m
+ }</component>[m
+[36m@@ -89,7 +83,8 @@[m
+       <option name="presentableId" value="Default" />[m
+       <updated>1645380225798</updated>[m
+       <workItem from="1645997919953" duration="344000" />[m
+[31m-      <workItem from="1645998392410" duration="7170000" />[m
+[32m+[m[32m      <workItem from="1645998392410" duration="7449000" />[m
+[32m+[m[32m      <workItem from="1646090110106" duration="1766000" />[m
+     </task>[m
+     <servers />[m
+   </component>[m
+[1mdiff --git a/out/production/SnakeGame/GamePanel$1.class b/out/production/SnakeGame/GamePanel$1.class[m
+[1mindex 71606fd..1f0f7b0 100644[m
+Binary files a/out/production/SnakeGame/GamePanel$1.class and b/out/production/SnakeGame/GamePanel$1.class differ
+[1mdiff --git a/out/production/SnakeGame/GamePanel$MyKeyAdapter.class b/out/production/SnakeGame/GamePanel$MyKeyAdapter.class[m
+[1mindex 0830c31..65e274b 100644[m
+Binary files a/out/production/SnakeGame/GamePanel$MyKeyAdapter.class and b/out/production/SnakeGame/GamePanel$MyKeyAdapter.class differ
+[1mdiff --git a/out/production/SnakeGame/GamePanel$State.class b/out/production/SnakeGame/GamePanel$State.class[m
+[1mindex 8b90a9b..b350b8a 100644[m
+Binary files a/out/production/SnakeGame/GamePanel$State.class and b/out/production/SnakeGame/GamePanel$State.class differ
+[1mdiff --git a/out/production/SnakeGame/GamePanel.class b/out/production/SnakeGame/GamePanel.class[m
+[1mindex 44391fd..1f1a416 100644[m
+Binary files a/out/production/SnakeGame/GamePanel.class and b/out/production/SnakeGame/GamePanel.class differ
+[1mdiff --git a/src/GamePanel.java b/src/GamePanel.java[m
+[1mindex 3fa5511..7e500ec 100644[m
+[1m--- a/src/GamePanel.java[m
+[1m+++ b/src/GamePanel.java[m
+[36m@@ -10,16 +10,16 @@[m [mstuff i still needa do[m
+ make it so the snake cant go through itself[m
+ add banner at the top where you can put things including new gamemodes and ability to change colora[m
+ fix glitch of eating banana = death[m
+[31m-[m
+[32m+[m[32mbe able to pause[m
+  */[m
+ [m
+ public class GamePanel extends JPanel implements ActionListener {[m
+[31m-    static final int m_screenX = 600;[m
+[31m-    static final int m_screenY = 600;[m
+[31m-    static final int m_unitSize = 150;[m
+[32m+[m[32m    static final int m_screenX = 800;[m
+[32m+[m[32m    static final int m_screenY = 800;[m
+[32m+[m[32m    static final int m_unitSize = 100;[m
+     static final int m_gameUnits = (m_screenX * m_screenY) / m_unitSize;[m
+     static final int totalSquares = (m_screenX / m_unitSize) * (m_screenY / m_unitSize);[m
+[31m-    static final int m_delay = 250;[m
+[32m+[m[32m    static final int m_delay = 150;[m
+     final int[] x = new int[m_gameUnits];[m
+     final int[] y = new int[m_gameUnits];[m
+     Color[] rainbow = {Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.magenta};[m
+[36m@@ -29,6 +29,7 @@[m [mpublic class GamePanel extends JPanel implements ActionListener {[m
+     int bananaY;[m
+     char direction = 'R';[m
+     Timer timer;[m
+[32m+[m[32m    boolean isPaused = false;[m
+     Random random;[m
+     JButton button;[m
+     JLabel label = new JLabel("Game Over");[m
+[36m@@ -207,8 +208,6 @@[m [mpublic class GamePanel extends JPanel implements ActionListener {[m
+ [m
+     // When restartButton is pressed start the game over again[m
+     public void restartGame() {[m
+[31m-[m
+[31m-[m
+ //        button.setEnabled(true);[m
+         for (int i = bodyParts; i >= 0; i--) {[m
+             x[i] = i;[m
+[36m@@ -224,6 +223,14 @@[m [mpublic class GamePanel extends JPanel implements ActionListener {[m
+         startGame();[m
+     }[m
+ [m
+[32m+[m[32m    public void pauseGame() {[m
+[32m+[m
+[32m+[m[32m        if (isPaused) {[m
+[32m+[m[32m            timer.stop();[m
+[32m+[m[32m            currentState = State.WAITING;[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m
+     @Override[m
+     public void actionPerformed(ActionEvent e) {[m
+         if (currentState == State.RUNNING) {[m
+[36m@@ -241,9 +248,9 @@[m [mpublic class GamePanel extends JPanel implements ActionListener {[m
+         public void keyPressed(KeyEvent e) {[m
+             switch (e.getKeyCode()) {[m
+                 case KeyEvent.VK_A:[m
+[31m-                    if (direction != 'R') {[m
+[31m-                        direction = 'L';[m
+[31m-                    }[m
+[32m+[m[32m                    //if (direction != 'R') {[m
+[32m+[m[32m                    direction = 'L';[m
+[32m+[m[32m                    //}[m
+                     break;[m
+                 case KeyEvent.VK_D:[m
+                     if (direction != 'L') {[m
