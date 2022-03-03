@@ -35,7 +35,9 @@ public class GamePanel extends JPanel implements ActionListener {
     JButton button;
     JLabel label = new JLabel("Game Over");
     JLabel label2 = new JLabel("You Win");
-    JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
+    JPanel topPanel = new JPanel();
+    JPanel bottomPanel = new JPanel();
+    JSeparator separator = new JSeparator();
 
     private final ImageIcon bananaPic = new ImageIcon("banana.png");
 
@@ -45,6 +47,7 @@ public class GamePanel extends JPanel implements ActionListener {
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
+        //topPanel.add(draw(g);)
         startGame();
     }
 
@@ -56,6 +59,7 @@ public class GamePanel extends JPanel implements ActionListener {
         timer.start();
         bananasEaten = 0;
         direction.add("R");
+        isPaused = false;
     }
 
     public void paintComponent(Graphics g) {
@@ -120,33 +124,34 @@ public class GamePanel extends JPanel implements ActionListener {
 
     //allows the snake to move up down left and right
     public void move() {
-        for (int i = bodyParts; i > 0; i--) {
-            x[i] = x[i - 1];
-            y[i] = y[i - 1];
-        }
-        // these are essential to ensure the linkedList for direction has the correct value and isn't empty
-        //if (!direction.isEmpty()) {
-        currentDirection = direction.pop();
-        //}
-        if (direction.isEmpty()) {
-            direction.add(currentDirection);
-        }
-        // assigns each case x and y directions to move towards
-        switch (currentDirection) {
-            case "U":
-                y[0] = y[0] - m_unitSize;
-                break;
-            case "D":
-                y[0] = y[0] + m_unitSize;
-                break;
-            case "L":
-                x[0] = x[0] - m_unitSize;
-                break;
-            case "R":
-                x[0] = x[0] + m_unitSize;
-                break;
-        }
+        if (!(isPaused)) {
+            for (int i = bodyParts; i > 0; i--) {
+                x[i] = x[i - 1];
+                y[i] = y[i - 1];
+            }
 
+            // these are essential to ensure the linkedList for direction has the correct value and isn't empty
+
+            currentDirection = direction.pop();
+            if (direction.isEmpty()) {
+                direction.add(currentDirection);
+            }
+            // assigns each case x and y directions to move towards
+            switch (currentDirection) {
+                case "U":
+                    y[0] = y[0] - m_unitSize;
+                    break;
+                case "D":
+                    y[0] = y[0] + m_unitSize;
+                    break;
+                case "L":
+                    x[0] = x[0] - m_unitSize;
+                    break;
+                case "R":
+                    x[0] = x[0] + m_unitSize;
+                    break;
+            }
+        }
     }
 
     // This count when the banana is eaten by the head of the snake
@@ -258,10 +263,6 @@ public class GamePanel extends JPanel implements ActionListener {
     // allows you to pause the game... still in development
     public void pauseGame() {
 
-        if (isPaused) {
-            timer.stop();
-            currentState = State.WAITING;
-        }
     }
 
     @Override
@@ -304,7 +305,23 @@ public class GamePanel extends JPanel implements ActionListener {
                         direction.add("D");
 
                     break;
-
+                case KeyEvent.VK_SHIFT:
+                    if (!(currentState == State.WAITING)) {
+                        currentState = State.GAME_OVER;
+                        System.out.println("Kill");
+                    } else {
+                        restartGame();
+                        System.out.println("reset");
+                    }
+                    break;
+                case KeyEvent.VK_SPACE:
+                    isPaused = true;
+                    System.out.println("paused");
+                    break;
+                case KeyEvent.VK_CONTROL:
+                    isPaused = false;
+                    System.out.println("unpaused");
+                    break;
             }
         }
     }
