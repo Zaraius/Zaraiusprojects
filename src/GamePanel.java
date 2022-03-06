@@ -9,14 +9,13 @@ import java.util.Random;
 /*
 stuff i still needa do:
 add banner at the top where you can put things including new gamemodes and ability to change colors AND 2 player mode
-fix glitch of eating banana = death (i think its fixed)
-be able to pause
+add new sprite when turning?
  */
 
 public class GamePanel extends JPanel implements ActionListener {
-    static final int m_screenX = 600;
-    static final int m_screenY = 600;
-    static final int m_unitSize = 60;
+    static final int m_screenX = 800;
+    static final int m_screenY = 800;
+    static final int m_unitSize = 80;
     static final int m_gameUnits = (m_screenX * m_screenY) / m_unitSize;
     static final int totalSquares = (m_screenX / m_unitSize) * (m_screenY / m_unitSize);
     static final int m_delay = 100;
@@ -47,11 +46,27 @@ public class GamePanel extends JPanel implements ActionListener {
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
-        //topPanel.add(draw(g);)
+        topPanel.setBounds(400, 400, 250, 250);
+        topPanel.setBackground(Color.GREEN);
+        this.add(topPanel);
         startGame();
     }
 
     public void startGame() {
+//        frame.setSize(m_screenX, m_screenY);
+//        frame.setBackground(Color.BLACK);
+//        frame.setFocusable(true);
+//        frame.addKeyListener(new MyKeyAdapter());
+//        frame.setVisible(true);
+//        topPanel.setBounds(0, 0, m_screenX, 100);
+//        topPanel.setBackground(Color.GREEN);
+//        frame.add(topPanel);
+//        bottomPanel.setBounds(0, 100, 50, 50);
+//        bottomPanel.setBackground(Color.YELLOW);
+//        frame.add(bottomPanel);
+//        button = new JButton("button");
+//        bottomPanel.add(button);
+
         label.setVisible(false);
         newBanana();
         currentState = State.RUNNING;
@@ -100,14 +115,13 @@ public class GamePanel extends JPanel implements ActionListener {
         g.setFont(new Font("Arial", Font.BOLD, 60));
         FontMetrics metrics = getFontMetrics(g.getFont());
         g.drawString("Score: " + bananasEaten, (m_screenX - metrics.stringWidth("Score: " + bananasEaten)) / 2, g.getFont().getSize());
-// def needa put stuff here
     }
 
     // creates a new Banana when one is eaten
     public void newBanana() {
         // creates random x and y positions for bananas
-        bananaX = random.nextInt((int) m_screenX / m_unitSize) * m_unitSize;
-        bananaY = random.nextInt((int) m_screenY / m_unitSize) * m_unitSize;
+        bananaX = random.nextInt(m_screenX / m_unitSize) * m_unitSize;
+        bananaY = random.nextInt(m_screenY / m_unitSize) * m_unitSize;
         // if banana x and y position is the same as a current snake body part, new one is created
         for (int i = 0; i < bodyParts; i++) {
             if ((bananaX == x[i]) && bananaY == y[i]) {
@@ -258,11 +272,6 @@ public class GamePanel extends JPanel implements ActionListener {
         remove(label);
         remove(label2);
         startGame();
-    }
-
-    // allows you to pause the game... still in development
-    public void pauseGame() {
-
     }
 
     @Override
