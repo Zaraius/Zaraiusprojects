@@ -19,6 +19,7 @@ public class GamePanel extends JPanel implements ActionListener {
     static final int m_gameUnits = (m_screenX * m_screenY) / m_unitSize;
     static final int totalSquares = (m_screenX / m_unitSize) * (m_screenY / m_unitSize);
     static final int m_delay = 100;
+    static final int m_topPanelY = m_screenY / 5;
     final int[] x = new int[m_gameUnits];
     final int[] y = new int[m_gameUnits];
     Color[] rainbow = {Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.magenta};
@@ -34,6 +35,7 @@ public class GamePanel extends JPanel implements ActionListener {
     JButton button;
     JLabel label = new JLabel("Game Over");
     JLabel label2 = new JLabel("You Win");
+    JLabel scoreLabel = new JLabel();
     JPanel topPanel = new JPanel();
     JPanel bottomPanel = new JPanel();
     JSeparator separator = new JSeparator();
@@ -46,27 +48,19 @@ public class GamePanel extends JPanel implements ActionListener {
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
-        topPanel.setBounds(400, 400, 250, 250);
-        topPanel.setBackground(Color.GREEN);
-        this.add(topPanel);
+
         startGame();
     }
 
     public void startGame() {
-//        frame.setSize(m_screenX, m_screenY);
-//        frame.setBackground(Color.BLACK);
-//        frame.setFocusable(true);
-//        frame.addKeyListener(new MyKeyAdapter());
-//        frame.setVisible(true);
-//        topPanel.setBounds(0, 0, m_screenX, 100);
-//        topPanel.setBackground(Color.GREEN);
-//        frame.add(topPanel);
-//        bottomPanel.setBounds(0, 100, 50, 50);
-//        bottomPanel.setBackground(Color.YELLOW);
-//        frame.add(bottomPanel);
-//        button = new JButton("button");
-//        bottomPanel.add(button);
-
+        scoreLabel.setBounds(10, 10, 100, 300);
+        scoreLabel.setForeground(Color.RED);
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 50));
+        scoreLabel.setVisible(true);
+        bottomPanel.setBackground(Color.YELLOW);
+        topPanel.setOpaque(false);
+        topPanel.setVisible(true);
+        this.add(topPanel);
         label.setVisible(false);
         newBanana();
         currentState = State.RUNNING;
@@ -87,7 +81,6 @@ public class GamePanel extends JPanel implements ActionListener {
     private State currentState = State.RUNNING;
 
     public void draw(Graphics g) {
-
         switch (currentState) {
             case RUNNING:
                 for (int i = 0; i < m_screenY / m_unitSize; i++) {
@@ -111,10 +104,13 @@ public class GamePanel extends JPanel implements ActionListener {
                 break;
 
         }
-        g.setColor(Color.red);
-        g.setFont(new Font("Arial", Font.BOLD, 60));
-        FontMetrics metrics = getFontMetrics(g.getFont());
-        g.drawString("Score: " + bananasEaten, (m_screenX - metrics.stringWidth("Score: " + bananasEaten)) / 2, g.getFont().getSize());
+        scoreLabel.setText("Score: " + bananasEaten);
+        topPanel.add(scoreLabel);
+
+        //g.setColor(Color.red);
+        //g.setFont(new Font("Arial", Font.BOLD, 60));
+        //FontMetrics metrics = getFontMetrics(g.getFont());
+        //g.drawString("Score: " + bananasEaten, (m_screenX - metrics.stringWidth("Score: " + bananasEaten)) / 2, g.getFont().getSize());
     }
 
     // creates a new Banana when one is eaten
@@ -125,7 +121,6 @@ public class GamePanel extends JPanel implements ActionListener {
         // if banana x and y position is the same as a current snake body part, new one is created
         for (int i = 0; i < bodyParts; i++) {
             if ((bananaX == x[i]) && bananaY == y[i]) {
-                System.out.println("bad banana");
                 if (bodyParts >= totalSquares) {
                     currentState = State.GAME_OVER;
                 } else {
@@ -175,6 +170,7 @@ public class GamePanel extends JPanel implements ActionListener {
             bananasEaten++;
             newBanana();
         }
+
     }
 
     public void checkCollision() {
@@ -211,7 +207,7 @@ public class GamePanel extends JPanel implements ActionListener {
         label.setForeground(Color.red);
         label.setFont(new Font("Arial", Font.BOLD, 40));
         FontMetrics metrics = getFontMetrics(g.getFont());
-        label.setBounds((m_screenX - metrics.stringWidth("Game Over")) / 3, m_screenY / 3, 300, 200);
+        label.setBounds((int) ((m_screenX - metrics.stringWidth("Game Over")) / 2.5), m_screenY / 3, 300, 200);
         label.setVisible(true);
         add(label);
         restartButton(g);
@@ -220,7 +216,7 @@ public class GamePanel extends JPanel implements ActionListener {
             remove(label);
             label2.setForeground(Color.red);
             label2.setFont(new Font("Monospaced", Font.BOLD, 80));
-            label2.setBounds((m_screenX - metrics.stringWidth("You Win!")) / 4, m_screenY / 3, 350, 100);
+            label2.setBounds((int) ((m_screenX - metrics.stringWidth("You Win!!")) / 3), m_screenY / 3, 350, 100);
             label2.setVisible(true);
             add(label2);
             System.out.println("You Win");
@@ -247,7 +243,7 @@ public class GamePanel extends JPanel implements ActionListener {
 //        g.drawString("Restart", (m_screenX - metrics.stringWidth("Restart"))/2, (int) (m_screenY/ 1.5));
         button = new JButton("Restart");
         button.addActionListener(this);
-        button.setBounds((m_screenX - metrics.stringWidth("Restart")) / 3, (int) (m_screenY / 1.5), 200, 200);
+        button.setBounds((int) ((m_screenX - metrics.stringWidth("Restart")) / 2.5), (int) (m_screenY / 1.5), 200, 200);
         button.setBackground(Color.BLACK);
         button.setFont(new Font("Serif", Font.BOLD, 45));
         button.setForeground(Color.RED);
@@ -293,25 +289,21 @@ public class GamePanel extends JPanel implements ActionListener {
 
                 case KeyEvent.VK_A:
                 case KeyEvent.VK_LEFT:
-                    if (!(direction.getLast().equals("R")))
-                        direction.add("L");
+                    if (!(direction.getLast().equals("R"))) direction.add("L");
                     break;
                 case KeyEvent.VK_D:
                 case KeyEvent.VK_RIGHT:
-                    if (!(direction.getLast().equals("L")))
-                        direction.add("R");
+                    if (!(direction.getLast().equals("L"))) direction.add("R");
 
                     break;
                 case KeyEvent.VK_W:
                 case KeyEvent.VK_UP:
-                    if (!(direction.getLast().equals("D")))
-                        direction.add("U");
+                    if (!(direction.getLast().equals("D"))) direction.add("U");
 
                     break;
                 case KeyEvent.VK_S:
                 case KeyEvent.VK_DOWN:
-                    if (!(direction.getLast().equals("U")))
-                        direction.add("D");
+                    if (!(direction.getLast().equals("U"))) direction.add("D");
 
                     break;
                 case KeyEvent.VK_SHIFT:
