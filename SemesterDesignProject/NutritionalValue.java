@@ -38,12 +38,12 @@ public class NutritionalValue {
 		return vitamins;
 	}
 
-	public static NutritionalValue getTotalNutritionalValue(NutritionalValue milk, NutritionalValue protein, NutritionalValue fruit1, NutritionalValue fruit2) {
-		return new NutritionalValue(milk.getCarbs() + protein.getCarbs() + fruit1.getCarbs() + fruit2.getCarbs(),
-				milk.getProtein() + protein.getProtein() + fruit1.getProtein() + fruit2.getProtein(),
-				milk.getFats() + protein.getFats() + fruit1.getFats() + fruit2.getFats(),
-				milk.getFiber() || protein.getFiber() || fruit1.getFiber() || fruit2.getFiber(),
-				milk.getVitamins() || protein.getVitamins() || fruit1.getVitamins() || fruit2.getVitamins());
+	public static NutritionalValue getTotalNutritionalValue(NutritionalValue milk, NutritionalValue protein, NutritionalValue fruit1) {
+		return new NutritionalValue(milk.getCarbs() + protein.getCarbs() + fruit1.getCarbs(),
+				milk.getProtein() + protein.getProtein() + fruit1.getProtein(),
+				milk.getFats() + protein.getFats() + fruit1.getFats(),
+				milk.getFiber() || protein.getFiber() || fruit1.getFiber(),
+				milk.getVitamins() || protein.getVitamins() || fruit1.getVitamins());
 	}
 	//TODO: For this to work I have to add each individual component
 	//public NutritionalValue addNutritionalValue(double originalServings, NutritionalValue othernValue, double servings) {
